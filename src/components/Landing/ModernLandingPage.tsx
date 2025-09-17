@@ -18,9 +18,49 @@ interface ModernLandingPageProps {
 const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLoginClick, onSignupClick }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [stats, setStats] = useState({
+    accuracy: '—',
+    students: '—',
+    institutions: '—',
+    uptime: '—'
+  });
 
   useEffect(() => {
     setIsVisible(true);
+    
+    // Try to fetch real stats from API
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/attendance/analytics');
+        if (response.ok) {
+          const data = await response.json();
+          setStats({
+            accuracy: data.accuracy || '99.9%',
+            students: data.totalStudents || 'Sample Data',
+            institutions: data.totalInstitutions || 'Sample Data',
+            uptime: data.uptime || '24/7'
+          });
+        } else {
+          // API not available, show sample data labels
+          setStats({
+            accuracy: '99.9%',
+            students: 'Sample Data',
+            institutions: 'Sample Data',
+            uptime: '24/7'
+          });
+        }
+      } catch (error) {
+        // API not available, show sample data labels
+        setStats({
+          accuracy: '99.9%',
+          students: 'Sample Data',
+          institutions: 'Sample Data',
+          uptime: '24/7'
+        });
+      }
+    };
+
+    fetchStats();
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -58,11 +98,11 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLoginClick, onS
     }
   ];
 
-  const stats = [
-    { number: '99.9%', label: 'Accuracy Rate', icon: SparklesIcon },
-    { number: '10K+', label: 'Students Tracked', icon: UserGroupIcon },
-    { number: '500+', label: 'Institutions', icon: AcademicCapIcon },
-    { number: '24/7', label: 'System Uptime', icon: CheckCircleIcon }
+  const statsDisplay = [
+    { number: stats.accuracy, label: 'Accuracy Rate', icon: SparklesIcon },
+    { number: stats.students, label: 'Students Tracked', icon: UserGroupIcon },
+    { number: stats.institutions, label: 'Institutions', icon: AcademicCapIcon },
+    { number: stats.uptime, label: 'System Uptime', icon: CheckCircleIcon }
   ];
 
   return (
@@ -167,7 +207,7 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLoginClick, onS
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              {stats.map((stat, index) => (
+              {statsDisplay.map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl mb-4">
                     <stat.icon className="w-6 h-6 text-white" />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
   HomeIcon,
@@ -48,19 +48,33 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({
     setIsOpen(false); // Close mobile menu after navigation
   };
 
+  // Handle ESC key press and outside clicks
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscKey);
+      return () => document.removeEventListener('keydown', handleEscKey);
+    }
+  }, [isOpen, setIsOpen]);
+
   return (
     <>
       {/* Mobile Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 h-full w-72 bg-white/95 backdrop-blur-xl border-r border-gray-200/50 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto
+        fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-white/95 to-indigo-50/95 backdrop-blur-xl border-r border-gray-200/50 shadow-2xl z-50 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto lg:bg-gradient-to-b lg:from-white lg:to-indigo-50/50
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         {/* Header */}

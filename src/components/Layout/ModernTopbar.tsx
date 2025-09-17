@@ -25,7 +25,7 @@ const ModernTopbar: React.FC<ModernTopbarProps> = ({ setSidebarOpen }) => {
         <div className="flex items-center space-x-4">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="lg:hidden p-2 rounded-xl bg-white/60 backdrop-blur-sm border border-gray-200/50 hover:bg-gradient-to-r hover:from-indigo-500/10 hover:to-purple-600/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-lg"
           >
             <Bars3Icon className="w-6 h-6 text-gray-600" />
           </button>
